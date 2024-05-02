@@ -4,6 +4,7 @@ title: Testes
 toc: false
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
+
 # Testes de carregamento de arquivo e gráficos
 
 <!-- Load and transform the data -->
@@ -23,4 +24,41 @@ Ordenamos o array como dataset pela propriedade "streams", e mostramos os 10 pri
 ```
 dataset.sort((a, b) => (a.streams < b.streams ? 1 : -1));
 display(dataset.slice(0,10));
+```
+Montando o objeto do vega
+
+<div id="vis" style="width: 100%; margin-top: 15px;">    
+    ${ vl.render(teste_streams()) }
+</div>
+
+```js
+const divWidth = Generators.width(document.querySelector("#vis"));
+
+```
+```js
+import * as vega from "npm:vega";
+import * as vegaLite from "npm:vega-lite";
+import * as vegaLiteApi from "npm:vega-lite-api";
+
+const vl = vegaLiteApi.register(vega, vegaLite);
+
+function teste_streams(){
+    return {
+        spec: {
+            data: {
+                values: dataset.slice(0 ,10)
+            },
+            mark: "bar",
+            encoding: {
+                y: {
+                    field: "streams",
+                    type: "quantitative"
+                },
+                x: {
+                    field: "track_name"
+                }
+            }
+        }
+    }
+}
 ```
