@@ -25,7 +25,7 @@ Ordenamos o array como dataset pela propriedade "streams", e mostramos os 10 pri
 dataset.sort((a, b) => (a.streams < b.streams ? 1 : -1));
 display(dataset.slice(0,10));
 ```
-Montando o objeto do vega
+# Top 10 das músicas (dataset ordenado por streams)
 
 <div id="vis" style="width: 100%; margin-top: 15px;">    
     ${ vl.render(teste_streams()) }
@@ -46,16 +46,19 @@ function teste_streams(){
     return {
         spec: {
             data: {
-                values: dataset.slice(0 ,10)
+                values: dataset.sort((a, b) => (a.streams < b.streams ? 1 : -1)).slice(0 ,50)
             },
             mark: "bar",
             encoding: {
                 y: {
                     field: "streams",
-                    type: "quantitative"
+                    type: "quantitative",
+                    title: "Número de streams até 2023"
                 },
                 x: {
-                    field: "track_name"
+                    field: "track_name",
+                    title: "Música",
+                    sort: null
                 }
             }
         }
