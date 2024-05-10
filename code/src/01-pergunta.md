@@ -6,8 +6,10 @@ toc: false
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
 
 # 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?
+<hr>
 
-- Total de músicas lançadas por mês:
+## Total de músicas lançadas por mês:
+
 <div class="grid grid-cols-3">
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;">Dataset Completo</span>  
@@ -127,16 +129,6 @@ months_array_50 = popula_months_array(months_array_50, dataset.slice(238, 475));
 months_array_75 = popula_months_array(months_array_75, dataset.slice(476, 715));
 months_array_100 = popula_months_array(months_array_100, dataset.slice(716, 952));
 months_array_completo = popula_months_array(months_array_completo, dataset);
-
-/*let metade_index = Math.floor(dataset.length / 2) ; // divisao inteira 
-let dataset_length = dataset.length;
-let q2_index = dataset.length % 2 ?  metade_index : (metade_index - 1 + metade_index)/2;
-let q1_index = q2_index % 2 ? q2_index/2 : Math.floor((q2_index/2 - 1 + q2_index/2)/2);
-let q3_index = (q2_index + 1) + (q1_index + 1);
-
-display(q1_index); // Indice para o primeiro Quartil - [0, 237]
-display(q2_index); // Indice para o segundo Quartil  - [238, 475] 
-display(q3_index); // Indice para o terceiro Quartil - [476, 952]*/
 
 /*
 *

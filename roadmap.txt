@@ -4,20 +4,20 @@ ROADMAP trabalho de visualização de dados
 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?
 
 - Ordenar o dataset por stream e extrair visualizações dentre o top 10(ou top n) de
-	- mês
-	- dia do mês
+	- released_month
+	- released_day
 	- bpm
 	- key
 	- mode
-	- danceability
-	- valence
-	- energy
-	- acousticness
-	- instrumentalness
-	- liveness
-	- speechiness
+	- danceability_%
+	- valence_%
+	- energy_%
+	- acousticness_%
+	- instrumentalness_%
+	- liveness_%
+	- speechiness_%
 
-comparar a visualização das características para ver se alguma se destaca dentre as músicas mais populares(com mais streams)
+comparar a visualização das características para ver se alguma se destaca dentre as músicas mais populares(com mais streams). Comparar também com músicas fora do top para verificar se a característica teve realmente influência;
 
 2) O conjunto das top 10 músicas e dos top 10 artistas varia muito se considerarmos apenas musicas lançadas no mesmo ano?
 
