@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vega-Lite Chart with Tooltips</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+    <div id="vis"></div>
+
+    <script>
+        const spec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "A simple bar chart with tooltips.",
+            "data": {
+                "values": [
+                    {"released_year": "2020", "total_in_playlist": 100},
+                    {"released_year": "2021", "total_in_playlist": 150}
+                ]
+            },
+            "mark": "bar",
+            "encoding": {
+                "x": {"field": "released_year", "type": "ordinal", "title": "Ano de Lançamento"},
+                "y": {"field": "total_in_playlist", "type": "quantitative", "title": "Total em Playlists"},
+                "tooltip": [
+                    {"field": "released_year", "type": "ordinal", "title": "Ano de Lançamento"},
+                    {"field": "total_in_playlist", "type": "quantitative", "title": "Total em Playlists"}
+                ]
+            }
+        };
+
+        vegaEmbed('#vis', spec);
+    </script>
+</body>
+</html>
