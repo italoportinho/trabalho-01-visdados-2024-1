@@ -10,11 +10,13 @@ toc: false
 
 ## Total de músicas lançadas por mês:
 
-<div class="grid grid-cols-3">
+<div class="grid grid-cols-2">
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;"></span>  
       ${ vl.render(bar_chart(months_array_completo, "Dataset Completo")) }
   </div>  
+</div>
+<div class="grid grid-cols-2">  
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;"></span>  
       ${ vl.render(bar_chart(months_array_25, "Dataset 25%")) }
@@ -49,13 +51,8 @@ toc: false
 
 <div class="grid grid-cols-1">
   <div class="card" id="chart_dataset_bpm">        
-      ${ vl.render(line_chart(dataset.slice(902, 952).sort((a, b) => (a.streams < b.streams ? 1 : -1)), "BPM Top 50 músicas", "streams", "streams(decrescente)", "bpm", "BPM da música")) }      
+      ${ vl.render(line_chart(dataset, "BPM Top 50 músicas", "streams", "streams", "bpm", "BPM da música")) }      
   </div>
-</div>
-<div class="grid grid-cols-1">
-  <div class="card" id="chart_dataset_bpm">         
-      ${ vl.render(line_chart(dataset.slice(0, 49), "BPM das 50 músicas com menos streams", "streams", "streams(crescente)", "bpm", "BPM da música")) }
-  </div>  
 </div>
 
 ## Propriedades percentuais
@@ -196,6 +193,7 @@ const vl = vegaLiteApi.register(vega, vegaLite);
 function bar_chart(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
     return {
         spec: {
+          width: "360",
             data: {
                 values: data_array
             },
@@ -266,7 +264,8 @@ function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
           x: {
               field: campo_x,
               title: title_x,
-              sort: 'desc'
+              aggregate: "mean",
+              sort: "asc"
           },
           
       }
