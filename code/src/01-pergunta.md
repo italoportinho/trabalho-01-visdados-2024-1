@@ -13,26 +13,51 @@ toc: false
 <div class="grid grid-cols-3">
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;">Dataset Completo</span>  
-      ${ vl.render(teste_streams(months_array_completo)) }
+      ${ vl.render(bar_chart(months_array_completo)) }
   </div>  
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;">Dataset 25%</span>  
-      ${ vl.render(teste_streams(months_array_25)) }
+      ${ vl.render(bar_chart(months_array_25)) }
   </div>  
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;">Dataset 25% - 50%</span>  
-      ${ vl.render(teste_streams(months_array_50)) }
+      ${ vl.render(bar_chart(months_array_50)) }
   </div>  
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;">Dataset 50% - 75%</span>  
-      ${ vl.render(teste_streams(months_array_75)) }
+      ${ vl.render(bar_chart(months_array_75)) }
   </div>  
   <div class="card" id="vis_completo">  
       <span style="font-size: 80%;">Dataset 75% - 100%</span>  
-      ${ vl.render(teste_streams(months_array_100)) }
+      ${ vl.render(bar_chart(months_array_100)) }
   </div>  
 </div>
 
+<hr>
+
+## Heatmap
+
+<div class="grid grid-cols-1">
+  <div class="card" id="chart_heatmap">         
+      ${ vl.render(heatmap(heatmap_data)) }
+  </div>  
+</div>
+
+<hr>
+
+## BPM das músicas:
+
+<div class="grid grid-cols-1">
+  <div class="card" id="chart_dataset_bpm">        
+      ${ vl.render(line_chart(dataset.slice(902, 952).sort((a, b) => (a.streams < b.streams ? 1 : -1)), "BPM Top 50 músicas", "streams(decrescente)")) }
+  </div>  
+</div>
+
+<div class="grid grid-cols-1">
+  <div class="card" id="chart_dataset_bpm">         
+      ${ vl.render(line_chart(dataset.slice(0, 49), "BPM das 50 músicas com menos streams", "streams(crescente)")) }
+  </div>  
+</div>
 
 ```js
 import * as vega from "npm:vega";
@@ -130,12 +155,24 @@ months_array_75 = popula_months_array(months_array_75, dataset.slice(476, 715));
 months_array_100 = popula_months_array(months_array_100, dataset.slice(716, 952));
 months_array_completo = popula_months_array(months_array_completo, dataset);
 
+const db = await DuckDBClient.of({spotify: FileAttachment("data/spotify-2023.csv").csv({typed: true})});
+
+const heatmap_data = await db.sql`SELECT 
+  concat(
+    released_year::INTEGER, '-'
+  , released_month::INTEGER, '-'
+  , released_day::INTEGER) as minha_date
+  , streams::LONG as streams_total
+FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC `;
+//display(heatmap_data);
+view(Inputs.table(heatmap_data));
+
 /*
 *
 */
 const vl = vegaLiteApi.register(vega, vegaLite);
 
-function teste_streams(data_array){
+function bar_chart(data_array){
     return {
         spec: {
             data: {
@@ -152,10 +189,86 @@ function teste_streams(data_array){
                     field: "mes",
                     title: "Mês de Lançamento",
                     sort: null
+                },
+                tooltip: [
+                  {field: "lancamentos", type: "quantitative", title: "Lançamentos"}
+                ],                
+            }
+        }
+    }
+}
+
+function line_chart(data_array, titulo, legenda_x){
+    return {
+        spec: {
+            data: {
+                values: data_array
+            },
+             mark: {
+                type: "line",
+                point: true
+            },
+            title: titulo,
+            encoding: {
+                y: {
+                    field: "bpm",
+                    type: "quantitative",
+                    title: "BPM da música"
+                },
+                x: {
+                    field: "streams",
+                    title: legenda_x,
+                    sort: 'desc'
+                },
+                
+            }
+        }
+    }
+}
+
+function heatmap(data_array){
+  return {
+    spec: {
+       "data": { values: data_array},
+        "title": "Soma de streams por dia de lançamento",
+        "config": {
+            "view": {
+                "strokeWidth": 0,
+                "step": 13
+            },
+            "axis": {
+                "domain": false
+            }
+        },
+        "mark": "rect",
+        "encoding": {
+            "x": {
+                "field": "minha_date",
+                "timeUnit": "date",
+                "type": "ordinal",
+                "title": "Dia",
+                "axis": {
+                    "labelAngle": 0,
+                    "format": "%e"
+                }
+            },
+            "y": {
+                "field": "minha_date",
+                "timeUnit": "month",
+                "type": "ordinal",
+                "title": "Mês"
+            },
+            "color": {
+                "field": "streams_total",
+                "aggregate": "sum",
+                "type": "quantitative",
+                "legend": {
+                    "title": null
                 }
             }
         }
     }
+  }
 }
 
 function popula_months_array(months_array, dataset){
