@@ -15,7 +15,7 @@ import * as vegaLiteApi from "npm:vega-lite-api";
 const db = await DuckDBClient.of({spotify: FileAttachment("data/spotify-2023.csv").csv({})});
 ```
 
-<h>Selecione o intervalo das datas</h>
+<h>Selecione o intervalo das datas de lançamento das músicas e a plataforma</h>
 <div id = "yearSelect" style = "display: flex; justify-content: space-between; width: 100%;">
 
 ```js
@@ -27,15 +27,47 @@ let supYear = view(Inputs.range([1930, 2023], {value: 2023, step:1, label: "Ano 
 
 </div>
 
+<div id = "yearSelect" style = "display: flex; justify-content: space-between; width: 100%;">
 
 ```js
-const platformOptions = ["Spotify", "Apple", "Deezer"];
+const platformOptions = ["Spotify", "Apple", "Deezer", "Shazam"];
 const platforms = view(Inputs.radio(platformOptions, {value: "Spotify", label: "Plataformas: "}));
+const divWidth = Generators.width(document.querySelector("#ex01"));
+```
+
+```js
+let topx = view(Inputs.range([0, 30], {value: 10, step: 1, label: "Top x charts"}));
+```
+
+</div>
+
+```js
+const query2=`
+SELECT source, CORR(playlists, charts) AS correlation
+FROM (
+    SELECT 'Spotify' AS source, CAST(REPLACE(in_spotify_playlists, ',', '') AS INTEGER) AS playlists, CAST(REPLACE(in_spotify_charts, ',', '') AS INTEGER) AS charts FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    UNION ALL
+    SELECT 'Apple' AS source, CAST(REPLACE(in_apple_playlists, ',', '') AS INTEGER) AS playlists, CAST(REPLACE(in_apple_charts, ',', '') AS INTEGER) AS charts FROM spotify 
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    UNION ALL
+    SELECT 'Deezer' AS source, CAST(REPLACE(in_deezer_playlists, ',', '') AS INTEGER) AS playlists, CAST(REPLACE(in_deezer_charts, ',', '') AS INTEGER) AS charts FROM 
+    spotify 
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+) AS results
+WHERE source IN ('${platforms}')
+GROUP BY source;
+`
+
+let dataCorr = await db.query(query2);
+let coor = dataCorr.batches[0].data.children[1].values["0"];
+if(coor == undefined){
+    coor = 0
+}
 ```
 
 
 ```js
-console.log(infYear)
 const query1= `
 SELECT * FROM(
     SELECT 'Spotify' AS source, in_spotify_playlists AS playlists, in_spotify_charts AS charts, track_name, artists_name, released_year
@@ -57,52 +89,296 @@ SELECT * FROM(
 `
 
 const dataGraph1 = await db.query(query1);
-view(Inputs.table(dataGraph1));
 
 const graph1 = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "description": "A scatterplot showing chart positions and playlist inclusions for various platforms.",
     "width": "container",
     "height": 500,
-    "data": {"values": dataGraph1},  // Ensure dataGraph1 has columns 'source', 'playlists', 'charts'
-    "mark": "point",
-    "encoding": {
-        "x": {
-            "field": "charts", 
-            "type": "quantitative", 
-            "title": "Inclusão em rankings"
-        },
-        "y": {
-            "field": "playlists", 
-            "type": "quantitative", 
-            "title": "Inclusão em playlists"
-        },
-        "color": {
-            "field": "source", 
-            "type": "nominal",
-            "legend": {
-                "title": "Plataforma"
-            },
-            "scale": {
-                "domain": ["Spotify", "Deezer", "Apple"],
-                "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
+    "data": {"values": dataGraph1},  // Garanta que dataGraph1 possui as colunas 'source', 'playlists', 'charts'
+    "layer": [
+        {
+            "mark": "point",
+            "encoding": {
+                "x": {
+                    "field": "charts", 
+                    "type": "quantitative", 
+                    "title": "Inclusão em rankings"
+                },
+                "y": {
+                    "field": "playlists", 
+                    "type": "quantitative", 
+                    "title": "Inclusão em playlists"
+                },
+                "color": {
+                    "field": "source", 
+                    "type": "nominal",
+                    "legend": {
+                        "title": "Plataforma",
+                        "orient": "right" // Orientação da legenda
+                    },
+                    "scale": {
+                        "domain": ["Spotify", "Deezer", "Apple"],
+                        "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
+                    }
+                },
+                "tooltip": [
+                    {"field": "source", "type": "nominal", "title": "Plataforma"},
+                    {"field": "charts", "type": "quantitative", "title": "Inclusão em rankings"},
+                    {"field": "playlists", "type": "quantitative", "title": "Inclusão em playlists"},
+                    {"field": "artists_name", "type": "nominal", "title": "Nome do Artista"},
+                    {"field": "track_name", "type": "nominal", "title": "Nome da Música"},
+                    {"field": "released_year", "type": "quantitative", "title": "Ano de lançamento"}
+                ]
             }
         },
-        "tooltip": [
-            {"field": "source", "type": "nominal", "title": "Plataforma"},
-            {"field": "charts", "type": "quantitative", "title": "Inclusão em rankings"},
-            {"field": "playlists", "type": "quantitative", "title": "Inclusão em playlists"},
-            {"field": "artists_name", "type": "nominal", "title": "Nome do Artista"},
-            {"field": "track_name", "type": "nominal", "title": "Nome da Música"},
-            {"field": "released_year", "type": "quantitative", "title": "Ano de lançamento"},
-            
-        ]
-    }
-}
+        {
+            "mark": {
+                "type": "text",
+                "align": "left",
+                "baseline": "top",
+                "dx": 5,
+                "fontSize": 16
+            },
+            "encoding": {
+                "x": {"value": divWidth-270},  // Posição X para a anotação
+                "y": {"value": 0},  // Posição Y para a anotação
+                "text": {"value": `Correlação: ${coor.toFixed(3)}`},  // Texto da anotação
+                
+            },
+        }
+    ]
+};
 
 vegaEmbed('#ex01', graph1)
-```
 
+
+
+const query2 = `
+SELECT * FROM (
+    (SELECT 'Spotify' AS source, COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) AS charts, track_name, artists_name, released_year,
+           bpm, key, mode, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Apple' AS source, COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) AS charts, track_name, artists_name, released_year,
+           bpm, key, mode, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Deezer' AS source, COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) AS charts, track_name, artists_name, released_year,
+           bpm, key, mode, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Shazam' AS source, COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) AS charts, track_name, artists_name, released_year,
+           bpm, key, mode, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+) AS results
+WHERE source IN ('${platforms}') 
+AND released_year BETWEEN ${infYear} AND ${supYear}; 
+
+
+`
+
+const dataGraph2 = await db.query(query2);
+view(Inputs.table(dataGraph2));
+
+
+const query3 = `
+SELECT source, 
+       AVG(CAST(danceability AS INTEGER)) AS Dançabilidade,
+       AVG(CAST(valence AS INTEGER)) AS Valência,
+       AVG(CAST(energy AS INTEGER)) AS Energia,
+       AVG(CAST(acousticness AS INTEGER)) AS Acústica,
+       AVG(CAST(instrumentalness AS INTEGER)) AS Instrumentalidade,
+       AVG(CAST(liveness AS INTEGER)) AS Vivacidade,
+       AVG(CAST(speechiness AS INTEGER)) AS Vocalidade
+FROM (
+    (SELECT 'Spotify' AS source, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Apple' AS source, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Deezer' AS source, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Shazam' AS source, "danceability_%" AS danceability, "valence_%" AS valence, 
+           "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
+           "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
+    FROM spotify
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+) AS aggregated_data
+WHERE source IN ('${platforms}') 
+GROUP BY source;
+`
+
+const dataGraph3 = await db.query(query3);
+
+const graph3 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Average audio properties by source",
+  "width": "container",
+  "height": 500,
+  "data": {
+    "values": dataGraph3 // assegure-se de que dataGraph3 está devidamente formatado e disponível no contexto
+  },
+  "transform": [
+    {
+      "fold": ["Dançabilidade", "Valência", "Energia", "Acústica", "Instrumentalidade", "Vivacidade", "Vocalidade"],
+      "as": ["Audio Property", "Average"]
+    }
+  ],
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "Audio Property", 
+      "type": "nominal",
+      "title": "Propriedades da música"
+    },
+    "y": {
+      "field": "Average",
+      "type": "quantitative",
+      "title": "Valor médio"
+    },
+    "color": {
+    "field": "source", 
+    "type": "nominal",
+    "legend": {
+        "title": "Plataforma",
+        "orient": "right"
+    },
+    "scale": {
+        "domain": ["Spotify", "Deezer", "Apple", "Shazam"],
+        "range": ["#1f77b4", "#ff7f0e", "#2ca02c", "#ffff05"]
+    }
+    },
+    "tooltip": [
+      {"field": "source", "type": "nominal", "title": "Plataforma"},
+      {"field": "Audio Property", "type": "nominal", "title":"Propriedade da música"},
+      {"field": "Average", "type": "quantitative", "title": "Valor médio", "format": ".2f"}
+    ]
+  }
+}
+
+vegaEmbed('#ex02', graph3)
+
+
+const query4 = `
+SELECT track_name, 
+       artists_name,
+       CAST(streams AS INT64) streams,
+       COUNT(DISTINCT source) AS platform_count,
+       STRING_AGG(DISTINCT source, ', ') AS platforms
+FROM (
+    (SELECT 'Spotify' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Apple' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Deezer' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+
+    UNION ALL
+
+    (SELECT 'Shazam' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+) AS results
+GROUP BY track_name, artists_name, streams
+HAVING COUNT(DISTINCT source) > 1
+ORDER BY platform_count DESC, track_name;
+`
+
+const dataGraph4 = await db.query(query4);
+view(Inputs.table(dataGraph4));
+
+const graph4 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Artist Appearances Across Platforms",
+  "width": "container",
+  "height": 500,
+  "data": {
+    "values": dataGraph4 
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "artists_name",
+      "type": "nominal",
+      "title": "Artist Name",
+      "axis": {"labelAngle": -45}
+    },
+    "y": {
+      "field": "appearance_count",
+      "type": "quantitative",
+      "title": "Appearance Count"
+    },
+    "tooltip": [
+      {"field": "artists_name", "type": "nominal", "title": "Artist"},
+      {"field": "appearance_count", "type": "quantitative", "title": "Appearances"}
+    ]
+  }
+}
+
+// vegaEmbed('#ex03', graph4)
+
+```
 
 
 <!-- ```js
@@ -229,4 +505,8 @@ vegaEmbed('#ex02', spec).then((result) => {
 
 <div class="grid grid-cols-1"> 
     <div id="ex02" class="card grid-colspan-1"></div>
+</div>
+
+<div class="grid grid-cols-1"> 
+    <div id="ex03" class="card grid-colspan-1"></div>
 </div>
