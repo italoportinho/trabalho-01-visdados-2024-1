@@ -49,13 +49,19 @@ toc: false
 
 <div class="grid grid-cols-1">
   <div class="card" id="chart_dataset_bpm">        
-      ${ vl.render(line_chart(dataset.slice(902, 952).sort((a, b) => (a.streams < b.streams ? 1 : -1)), "BPM Top 50 músicas", "streams(decrescente)")) }
+      ${ vl.render(line_chart(dataset.slice(902, 952).sort((a, b) => (a.streams < b.streams ? 1 : -1)), "BPM Top 50 músicas", "streams", "streams(decrescente)", "bpm", "BPM da música")) }      
+  </div>
+</div>
+<div class="grid grid-cols-1">
+  <div class="card" id="chart_dataset_bpm">         
+      ${ vl.render(line_chart(dataset.slice(0, 49), "BPM das 50 músicas com menos streams", "streams", "streams(crescente)", "bpm", "BPM da música")) }
   </div>  
 </div>
 
+## Propriedades percentuais
 <div class="grid grid-cols-1">
-  <div class="card" id="chart_dataset_bpm">         
-      ${ vl.render(line_chart(dataset.slice(0, 49), "BPM das 50 músicas com menos streams", "streams(crescente)")) }
+  <div class="card" id="multiline_chart">         
+      ${ vl.render(multiline_chart(multiline_data)) }
   </div>  
 </div>
 
@@ -165,8 +171,12 @@ const heatmap_data = await db.sql`SELECT
   , streams::LONG as streams_total
 FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC LIMIT 1000 `;
 //display(heatmap_data);
-view(Inputs.table(heatmap_data));
+//view(Inputs.table(heatmap_data));
 
+const multiline_data = await db.sql`SELECT 
+  "danceability_%", "valence_%", streams
+FROM spotify WHERE streams is NOT NULL ORDER BY streams `;
+view(Inputs.table(multiline_data));
 /*
 *
 */
@@ -199,7 +209,7 @@ function bar_chart(data_array, titulo){
     }
 }
 
-function line_chart(data_array, titulo, legenda_x){
+function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
     return {
         spec: {
             data: {
@@ -212,19 +222,111 @@ function line_chart(data_array, titulo, legenda_x){
             title: titulo,
             encoding: {
                 y: {
-                    field: "bpm",
+                    field: campo_y,
                     type: "quantitative",
-                    title: "BPM da música"
+                    title: title_y
                 },
                 x: {
-                    field: "streams",
-                    title: legenda_x,
+                    field: campo_x,
+                    title: title_x,
                     sort: 'desc'
                 },
                 
             }
         }
     }
+}
+
+function multiline_chart(data_array){
+  return {
+    spec: {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      width: "container",
+      height: "400",
+      data: {
+        values: dataset
+      },
+      layer: [
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "danceability_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "danceability_%", "type": "nominal"},
+          },
+          name: "child_layer_danceability_%"
+        },
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "valence_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "valence_%", "type": "nominal"},
+          },
+          name: "child_layer_valence_%"
+        },
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "energy_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "energy_%", "type": "nominal"},
+          },
+          name: "child_layer_energy_%"
+        },
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "acousticness_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "acousticness_%", "type": "nominal"},
+          },
+          name: "child_layer_acousticness_%"
+        },
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "instrumentalness_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "instrumentalness_%", "type": "nominal"},
+          },
+          name: "child_layer_instrumentalness_%"
+        },
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "liveness_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "liveness_%", "type": "nominal"},
+          },
+          name: "child_layer_liveness_%"
+        },
+        {
+          mark: "line",
+          encoding: {
+            x: { bin: true, field: "streams", type: "quantitative" },
+            y: {
+              aggregate: "mean", field: "speechiness_%", type: "quantitative", title: "Média do valor da propriedade(%)"
+            },
+            color: { datum: "speechiness_%", "type": "nominal"},
+          },
+          name: "child_layer_speechiness_%"
+        },
+      ]    
+    }
+  }
 }
 
 function heatmap(data_array){
