@@ -65,6 +65,14 @@ toc: false
   </div>  
 </div>
 
+## Propriedades musicais
+<div class="grid grid-cols-1">
+  <div class="card" id="vis_completo">  
+      <span style="font-size: 80%;"></span>  
+      ${ vl.render(bar_chart2(musical_data, "Streams por tom musical", "streams", "Streams", "tom_da_musica", "Tom musical")) }
+  </div>    
+</div>
+
 ```js
 import * as vega from "npm:vega";
 import * as vegaLite from "npm:vega-lite";
@@ -173,12 +181,19 @@ FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC LIMIT 1000 `;
 //display(heatmap_data);
 //view(Inputs.table(heatmap_data));
 
+const musical_data = await db.sql`
+  SELECT 
+    concat(key, ' ', mode ) as tom_da_musica, 
+    sum(streams)::LONG as streams
+  FROM spotify WHERE streams is NOT NULL AND key is not null GROUP BY tom_da_musica ORDER BY streams DESC`;
+//view(Inputs.table(musical_data));
+
 /*
 *
 */
 const vl = vegaLiteApi.register(vega, vegaLite);
 
-function bar_chart(data_array, titulo){
+function bar_chart(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
     return {
         spec: {
             data: {
@@ -203,6 +218,31 @@ function bar_chart(data_array, titulo){
             }
         }
     }
+}
+
+function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
+  return {
+    spec: {
+      data: {
+          values: data_array
+      },
+      width: "800",
+      mark: "bar",
+      title: titulo,
+      encoding: {
+        x: {
+            field: "tom_da_musica",
+            title: "Tom da música",
+            sort: null
+        },
+        y: {
+            field: "streams",
+            type: "quantitative",
+            title: "Total de streams"
+        }                
+      }
+    }
+  }
 }
 
 function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
