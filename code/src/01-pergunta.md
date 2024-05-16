@@ -61,7 +61,7 @@ toc: false
 ## Propriedades percentuais
 <div class="grid grid-cols-1">
   <div class="card" id="multiline_chart">         
-      ${ vl.render(multiline_chart(multiline_data)) }
+      ${ vl.render(multiline_chart(dataset)) }
   </div>  
 </div>
 
@@ -173,10 +173,6 @@ FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC LIMIT 1000 `;
 //display(heatmap_data);
 //view(Inputs.table(heatmap_data));
 
-const multiline_data = await db.sql`SELECT 
-  "danceability_%", "valence_%", streams
-FROM spotify WHERE streams is NOT NULL ORDER BY streams `;
-view(Inputs.table(multiline_data));
 /*
 *
 */
@@ -210,41 +206,42 @@ function bar_chart(data_array, titulo){
 }
 
 function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
-    return {
-        spec: {
-            data: {
-                values: data_array
-            },
-             mark: {
-                type: "line",
-                point: true
-            },
-            title: titulo,
-            encoding: {
-                y: {
-                    field: campo_y,
-                    type: "quantitative",
-                    title: title_y
-                },
-                x: {
-                    field: campo_x,
-                    title: title_x,
-                    sort: 'desc'
-                },
-                
-            }
-        }
+  return {
+    spec: {
+      width: "800",
+      data: {
+          values: data_array
+      },
+        mark: {
+          type: "line",
+          point: true
+      },
+      title: titulo,
+      encoding: {
+          y: {
+              field: campo_y,
+              type: "quantitative",
+              title: title_y
+          },
+          x: {
+              field: campo_x,
+              title: title_x,
+              sort: 'desc'
+          },
+          
+      }
     }
+  }
 }
 
 function multiline_chart(data_array){
   return {
     spec: {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      width: "container",
+      width: "800",
       height: "400",
       data: {
-        values: dataset
+        values: data_array
       },
       layer: [
         {
@@ -332,6 +329,8 @@ function multiline_chart(data_array){
 function heatmap(data_array){
   return {
     spec: {
+        width: "800",
+        height: "268",
        "data": { values: data_array},
         "title": "Soma de streams por dia de lançamento",
         "config": {
