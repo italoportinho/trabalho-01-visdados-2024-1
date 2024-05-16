@@ -12,24 +12,24 @@ toc: false
 
 <div class="grid grid-cols-3">
   <div class="card" id="vis_completo">  
-      <span style="font-size: 80%;">Dataset Completo</span>  
-      ${ vl.render(bar_chart(months_array_completo)) }
+      <span style="font-size: 80%;"></span>  
+      ${ vl.render(bar_chart(months_array_completo, "Dataset Completo")) }
   </div>  
   <div class="card" id="vis_completo">  
-      <span style="font-size: 80%;">Dataset 25%</span>  
-      ${ vl.render(bar_chart(months_array_25)) }
+      <span style="font-size: 80%;"></span>  
+      ${ vl.render(bar_chart(months_array_25, "Dataset 25%")) }
   </div>  
   <div class="card" id="vis_completo">  
-      <span style="font-size: 80%;">Dataset 25% - 50%</span>  
-      ${ vl.render(bar_chart(months_array_50)) }
+      <span style="font-size: 80%;"></span>  
+      ${ vl.render(bar_chart(months_array_50, "Dataset 25% - 50%")) }
   </div>  
   <div class="card" id="vis_completo">  
-      <span style="font-size: 80%;">Dataset 50% - 75%</span>  
-      ${ vl.render(bar_chart(months_array_75)) }
+      <span style="font-size: 80%;"></span>  
+      ${ vl.render(bar_chart(months_array_75, "Dataset 50% - 75%")) }
   </div>  
   <div class="card" id="vis_completo">  
-      <span style="font-size: 80%;">Dataset 75% - 100%</span>  
-      ${ vl.render(bar_chart(months_array_100)) }
+      <span style="font-size: 80%;"></span>  
+      ${ vl.render(bar_chart(months_array_100, "Dataset 75% - 100%")) }
   </div>  
 </div>
 
@@ -163,7 +163,7 @@ const heatmap_data = await db.sql`SELECT
   , released_month::INTEGER, '-'
   , released_day::INTEGER) as minha_date
   , streams::LONG as streams_total
-FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC `;
+FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC LIMIT 1000 `;
 //display(heatmap_data);
 view(Inputs.table(heatmap_data));
 
@@ -172,13 +172,14 @@ view(Inputs.table(heatmap_data));
 */
 const vl = vegaLiteApi.register(vega, vegaLite);
 
-function bar_chart(data_array){
+function bar_chart(data_array, titulo){
     return {
         spec: {
             data: {
                 values: data_array
             },
             mark: "bar",
+            title: titulo,
             encoding: {
                 y: {
                     field: "lancamentos",
