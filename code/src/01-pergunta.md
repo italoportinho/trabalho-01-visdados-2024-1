@@ -11,6 +11,13 @@ toc: false
 # 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?
 <hr>
 
+<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+    <p style="text-align: justify;">
+        Nesta primeira seção do trabalho vamos explorar os atributos do dataset com diversas visualizações para verificar se algum valor específico, ou faixa de valor, desses atributos tem alguma influência relevante na posição da música no conjunto. Serão apresentadas visualizações para o mês de lançamento, o dia de lançamento, BPM, para todas as propriedades percentuais, e também para as propriedades musicais(tom da música). Exceto pela visualização de  dia de lançamento, todas usam o dataset já ordenado pelo número de streams.
+    </p>
+</div>
+<br>
+
 ## Total de músicas lançadas por mês:
 
 <div class="grid grid-cols-2">
@@ -38,6 +45,13 @@ toc: false
   </div>  
 </div>
 
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Essa conjunto de visualizações apresenta o número de lançamentos por mês, como dataset ordenado por streams em ordem crescente e divido em intervalo quantil. Foi utilizado o gráfico de barra, pois cada mês seria um "pote" aonde os lançamentos seriam colocados, possibilitando uma comparação quantitativa visual direta entre os diferentes intervalos. Primeiramente é apresentado o gráfico com o dataset completo, e é verificado que os meses de janeiro e maio tem os maiores números de lançamentos, sendo os únicos acima de 100. Em seguida temos 4 visualizaçãoes, uma para cada quartil do dataset começando pelo primeiro e o mês de maio se destaca no primeiro, segundo e terceiro, e o mês de janeiro se destaca no quarto, que é o intervalo mais relevante para nosso estudo pois é o que contém as  músicas com os maiores números de visualizações. 
+    </p>
+</div>
+<br>
+
 <hr>
 
 ## Heatmap
@@ -49,6 +63,13 @@ toc: false
   </div>  
 </div>
 
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Nessa visualiação apresentamos uma visualização em forma de matriz, o mapa de calor, da forma mês(eixo y) por dia do mês(eixo x). Quanto mais lançamentos um dia do mês tiver, mais escura será a cor do quadrante e se destacam os dias 6 de maio e 1º de janeiro, o que corrobora o achado das visualizações de gráfico de barra que já apontavam esses meses como os com maior número de lançamentos de músicas que alcançaram as posições mais altas no dataset ordenado. 
+    </p>
+</div>
+<br>
+
 <hr>
 
 ## BPM das músicas:
@@ -58,6 +79,13 @@ toc: false
       ${ vl.render(line_chart(dataset, "BPM Top 50 músicas", "streams", "streams", "bpm", "BPM da música")) }      
   </div>
 </div>
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Para analizar o bpm(batidas por minuto) será utilizado um gráfico de linha com pontos. Nele podemos verificar que na metade inferior da escala de streams, o bpm das músicas oscila bastante entre valores altos e baixos. Porém da metade pra cima, e mais especificamente na parte mais alta da escala de streams (aonde estão as  músicas mais populares), podemos constatar  que média do valor de bpm mantém um valor bem estável, tendendo à valores entre 150 e 200. Podemos verificar também que músicas com bpm maior que 200 estão associdas à metade menor da escala de streams, bem como músicas com bpm inferior à 100.
+    </p>
+</div>
+<br>
+
 
 ## Propriedades percentuais
 <div class="grid grid-cols-1">
@@ -65,6 +93,51 @@ toc: false
       ${ vl.render(multiline_chart(dataset)) }
   </div>  
 </div>
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Aqui é utilizado um gráfico multilinha para explorar os atributos que são apresentados com um valor percentual. São eles: danceability(o quão dançante é  a música), valence (positividade da música), energy (nível de energia associado à música), acousticness (sons acústicos na música), instrumentalness (proporção de instrumental na música), liveness (presença de elementos de gravação ao vivo na música) e speechiness (prenseça de vocais na música). Aqui vamos analizar as duas pontas do gráfico para verificar se um valor alto ou baixo de uma propriedade influencia no sucesso da música, e também vamos ver se alguma propriedade é mais relevante que outra.         
+    </p>
+    <ul style="max-width: none;">
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">danceability:</span> as músicas com mais streams estão associadas com valores acima de 65, próximos a 70, no entanto as músicas com menos streams também apresentam esse comportamento. 
+        </p>
+      </li>
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">valence:</span> essa  é uma propriedade que mostra uma relevância de maiores valores para alcançar o sucesso. As músicas com mais streams apresentam valores entre 60 e 65, enquanto as com menos streams tem valores um pouco acima de 50.
+        </p>
+      </li>
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">energy:</span> as músicas com mais streams apresentam valores acima de 70, enquanto as com menos streams estão estávei em torno de 65.
+        </p>
+      </li>
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">acousticness:</span> tanto as músicas com menos streams quanto as com mais strams apresentam valores próximo de 30, no entanto na parte média do gráfico tem um grande aumento de valor, mais próximo à 40.
+        </p>
+      </li>
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">instrumentalness:</span> essa parece ser uma propriedade irrelevante, todo o conjunto apresenta valores próximo à 0.
+        </p>
+      </li>
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">liveness:</span> dois terços do conjunto apresentam valores próximos à 20, no entanto as músicas mais populares apresentam valores abaixo de 10. 
+        </p>
+      </li>
+      <li>
+        <p style="text-align: justify;">   
+          <span style="font-weight: 700;">speechiness:</span> a maior parte do conjunto apresenta valor estável próximo de 8, no entanto as músicas com menos streams apresentam valores acima de 10.
+        </p>
+      </li>
+    </ul>
+    
+</div>
+<br>
+
 
 ## Propriedades musicais
 <div class="grid grid-cols-1">
@@ -73,6 +146,12 @@ toc: false
       ${ vl.render(bar_chart2(musical_data, "Streams por tom musical", "streams", "Streams", "tom_da_musica", "Tom musical")) }
   </div>    
 </div>
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Para essa visualização, os atributos key e mode foram concatenados para formar o tom da música e totalizamos o número de streams para cada tom e apresentamos em ordem crescente em um gráfico de barra, para comparação direta. O tom C# Maior (Dó SUstenido Maior) é de longe o mais comum, seguido por Ré Maior, Sol sustenido Maior e Sol Maior. A primeira tonalidade menor surge apenas na quinta posição. Podemos notar também que da primeira para a segunda posição a tonalidade varia apenas um semitom, bem como da terceira para a quarta posição, ou seja bem pouco.
+    </p>
+</div>
+
 
 ```js
 import * as vega from "npm:vega";
@@ -209,8 +288,8 @@ DROP TABLE all_dates;
 
 
 `;
-display(heatmap_data);
-view(Inputs.table(heatmap_data));
+//display(heatmap_data);
+//view(Inputs.table(heatmap_data));
 
 const musical_data = await db.sql`
   SELECT 

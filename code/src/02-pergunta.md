@@ -2,10 +2,19 @@
 title: Pergunta 2
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
-
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
 # 2) O conjunto das top 10 músicas e dos top 10 artistas varia muito se considerarmos apenas musicas lançadas no mesmo ano?
 <hr>
+
+<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+    <p style="text-align: justify;">
+        Nesta seção do trabalho vamos analisar as relações entre o top 10 de músicas e o top 10 de artistas, ano a ano, e usar um conjunto de visualizações para tentar extrair alguma informação relevante. Começaremos listando a quantidade de músicas lançadas por ano, para verificarmos os anos mais relevantes. Temos que levar em consideração que o dataset utilizado não é um conjunto completo de todas as músicas lançadas em cada ano, portanto muitos anos terão pouquíssimos ou nenhum lançamento. Serão utilizados gráficos de barras, em três visualizações por ano, para comparar os artistas do top 10 com quantas músicas foram necessárias para alcançar o top 10, e se algum desses artistas está presente no top 10 das músicas.
+    </p>
+</div>
+<br>
 
 ## Total de lançamentos por ano
 
@@ -15,9 +24,14 @@ title: Pergunta 2
       ${ vl.render(bar_chart2(lancamentos_por_ano, "Total de músicas lançadas em cada ano", "Ano", "Ano", "Musicas", "Total de lançamentos")) }
   </div>  
 </div>
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Dessa visualização podemos constatar que o ano com  mais lançamentos é 2022, e o segundo colocado tem menos da metade dos lançamentos, e o terceiro menos de um terço. Concluímos que o ano mais relevante para análise, levando em consideração o número de registros,  é 2022. Abaixo utilizaremos três visualizações para comparar o número de streams dos artistas com o número de músicas lançadas e o top 10 de músicas desse ano.
+    </p>
+</div>
+<br>
 
-## Ano relevante: 2022
-* ### Top 10 de artistas por streams
+## Top 10 de artistas por streams (2022)
 <div class="grid grid-cols-1">
   <div class="card" id="total_musicas_ano">  
       <span style="font-size: 80%;"></span>  
@@ -25,7 +39,7 @@ title: Pergunta 2
   </div>  
 </div>
 
-* ### Do top 10 de artistas, o total de músicas lançadas no ano. Quantas músicas para chegar ao top 10?
+## Quantas músicas para chegar ao top 10? (2022)
 
 <div class="grid grid-cols-1">
   <div class="card" id="count_musicas_artistas">  
@@ -33,17 +47,20 @@ title: Pergunta 2
       ${ vl.render(bar_chart2(artists_array.slice(0, 10), "Músicas por Artista", "artists_name", "Artista", "musicas", "Total de músicas")) }
   </div>  
 </div>
-
-* ### Top 10 músicas no ano. Alguma música dos artistas anteriores?
-
-<div class="grid grid-cols-1">
-  <div class="card" id="chart_top_10_musicas_2022">  
-      <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart2(top_10_musicas_2022, "Top 10 músicas - 2022", "track_name", "Música", "streams", "Streams")) }
-  </div>  
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        No primeiro gráfico (Top 10 de artistas) são listados os 10 artistas com mais streams em 2022, e desse conjunto totalizamos quantas músicas foram necessárias para cada artista chegar à esse top 10. Na segunda visualização podemos constatar que metade dos artistas teve que lançar mais de 10 músicas somente em 2022 para chegar ao top 10!
+    </p>
 </div>
+<br>
+
+
+
 
 ```js
+import * as vega from "npm:vega";
+import * as vegaLite from "npm:vega-lite";
+import * as vegaLiteApi from "npm:vega-lite-api";
 // Carregamos o dataset.
 let dataset = await FileAttachment("data/spotify-2023.csv").csv({typed: true});
 const db = await DuckDBClient.of({spotify: FileAttachment("data/spotify-2023.csv").csv({typed: true})});
@@ -158,4 +175,61 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
   }
 }
 
+const chart_top_10_musicas_2022_embed = {
+    data: {
+        values: top_10_musicas_2022
+    },
+    width: "800",
+    mark: "bar",
+    title: "Top 10 músicas - 2022",
+    encoding: {
+        x: {
+            field: "track_name",
+            title: "Música",
+            sort: null
+        },
+        y: {
+            field: "streams",
+            type: "quantitative",
+            title: "Streams"
+        },
+        tooltip: [
+            {
+                field: "artists_name", 
+                type: "nominal", 
+                title: "Artista: ",
+            },
+            {
+                field: "track_name", 
+                type: "nominal", 
+                title: "Música: ",
+            },
+            {
+                field: "streams",
+                type: "quantitative",                
+                title: "streams",
+                format:",.3s"
+            }
+        ]                
+    }
+}
+vegaEmbed('#chart_top_10_musicas_2022', chart_top_10_musicas_2022_embed)
+
 ```
+
+## Top 10 músicas no ano. (2022)
+
+<div class="grid grid-cols-1">
+  <div class="card" id="chart_top_10_musicas_2022"></div>  
+</div>
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
+    <p style="text-align: justify;">   
+        Nesse gráfico é apresentado o top 10 de músicas em 2022. Passando o mouse sobre as barras do gráfico é possível observar os valores dos campos e contatamos que 4 artistas presentes nas duas visualizações anteriores estão com um música presente no top 10.
+    </p>
+</div>
+<br>
+<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+    <p style="text-align: justify;">
+        
+    </p>
+</div>
