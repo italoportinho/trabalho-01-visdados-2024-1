@@ -1,9 +1,12 @@
 ---
-theme: dashboard
 title: Pergunta 1
+theme: [glacier,dashboard]
 toc: false
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
 # 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?
 <hr>
@@ -40,8 +43,9 @@ toc: false
 ## Heatmap
 
 <div class="grid grid-cols-1">
-  <div class="card" id="chart_heatmap">         
-      ${ vl.render(heatmap(heatmap_data)) }
+  <div class="card" id="chart_heatmap">   
+
+      <!-- ${ vl.render(heatmap(heatmap_data)) } -->
   </div>  
 </div>
 
@@ -168,15 +172,45 @@ months_array_completo = popula_months_array(months_array_completo, dataset);
 
 const db = await DuckDBClient.of({spotify: FileAttachment("data/spotify-2023.csv").csv({typed: true})});
 
-const heatmap_data = await db.sql`SELECT 
-  concat(
-    released_year::INTEGER, '-'
-  , released_month::INTEGER, '-'
-  , released_day::INTEGER) as minha_date
-  , streams::LONG as streams_total
-FROM spotify WHERE streams is NOT NULL ORDER BY streams_total DESC LIMIT 1000 `;
-//display(heatmap_data);
-//view(Inputs.table(heatmap_data));
+const heatmap_data = await db.sql`
+CREATE TEMP TABLE all_dates (
+    minha_date VARCHAR,
+    streams_total INT DEFAULT 0
+);
+
+INSERT INTO all_dates (minha_date)
+SELECT
+    CONCAT(m, '-', d) AS minha_date
+FROM
+    (SELECT * FROM (VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12)) AS m(m)),
+    (SELECT * FROM (VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28),(29),(30),(31)) AS d(d));
+
+SELECT 
+    all_dates.minha_date, 
+    COALESCE(LOG10(SUM(CAST(s.streams_total AS INT64))), 0) AS log_streams_total,
+    COALESCE(SUM(CAST(s.streams_total AS INT64)), 0) AS streams_total
+FROM 
+    all_dates
+LEFT JOIN (
+    SELECT 
+        CONCAT(released_month::INTEGER, '-', released_day::INTEGER) AS minha_date,
+        streams::BIGINT AS streams_total
+    FROM 
+        spotify 
+    WHERE 
+        streams IS NOT NULL 
+) AS s ON all_dates.minha_date = s.minha_date
+GROUP BY 
+    all_dates.minha_date
+ORDER BY 
+    all_dates.minha_date;
+
+DROP TABLE all_dates;
+
+
+`;
+display(heatmap_data);
+view(Inputs.table(heatmap_data));
 
 const musical_data = await db.sql`
   SELECT 
@@ -365,52 +399,69 @@ function multiline_chart(data_array){
   }
 }
 
-function heatmap(data_array){
-  return {
-    spec: {
-        width: "800",
-        height: "268",
-       "data": { values: data_array},
-        "title": "Soma de streams por dia de lançamento",
-        "config": {
-            "view": {
-                "strokeWidth": 0,
-                "step": 13
-            },
+
+console.log(heatmap_data.batches[0].data.children[0]);
+
+
+const graph_heatmap = {
+    width: "800",
+    height: "268",
+    "data": { values: heatmap_data},
+    "title": "Soma de streams por dia de lançamento",
+    "config": {
+        "view": {
+            "strokeWidth": 0,
+            "step": 13
+        },
+        "axis": {
+            "domain": false
+        }
+    },
+    "mark": "rect",
+    "encoding": {
+        "x": {
+            "field": "minha_date",
+            "timeUnit": "date",
+            "type": "ordinal",
+            "title": "Dia",
             "axis": {
-                "domain": false
+                "labelAngle": 0,
+                "format": "%e"
             }
         },
-        "mark": "rect",
-        "encoding": {
-            "x": {
-                "field": "minha_date",
-                "timeUnit": "date",
-                "type": "ordinal",
-                "title": "Dia",
-                "axis": {
-                    "labelAngle": 0,
-                    "format": "%e"
-                }
-            },
-            "y": {
-                "field": "minha_date",
-                "timeUnit": "month",
-                "type": "ordinal",
-                "title": "Mês"
-            },
-            "color": {
-                "field": "streams_total",
-                "aggregate": "sum",
-                "type": "quantitative",
-                "legend": {
-                    "title": null
-                }
+        "y": {
+            "field": "minha_date",
+            "timeUnit": "month",
+            "type": "ordinal",
+            "title": "Mês"
+        },
+        "color": {
+            "field": "log_streams_total",
+            "type": "quantitative",
+            "legend": {
+                "title": "Número de streams em log",
+                "format": ",.0s"
             }
-        }
+        },
+        "tooltip": [
+            {
+                "field": "streams_total", 
+                "type": "quantitative", 
+                "title": "Total do número de streams",
+                "format":","
+            },
+            {
+                "field": "log_streams_total", 
+                "type": "quantitative", 
+                "title": "Log total do número de streams",
+                "format":",.3s"
+            },
+        ]
     }
-  }
 }
+
+
+ vegaEmbed("#chart_heatmap", graph_heatmap)
 
 function popula_months_array(months_array, dataset){
   // Iteramos no dataset para extrair os lançamentos por mês e popular o array.

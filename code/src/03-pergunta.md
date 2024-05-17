@@ -1,6 +1,7 @@
 ---
 sql:
   spotify: ./data/spotify-2023.csv
+theme: [glacier]
 title: Pergunta 3
 ---
 <style> body, div, p, li, ol, h1, h2, h3 { max-width: none; } </style>
@@ -265,12 +266,14 @@ SELECT source,
        CAST(acousticness AS INTEGER) AS Acústica,
        CAST(instrumentalness AS INTEGER) AS Instrumentalidade,
        CAST(liveness AS INTEGER) AS Vivacidade,
-       CAST(speechiness AS INTEGER) AS Vocalidade
+       CAST(speechiness AS INTEGER) AS Vocalidade,
+       released_year
 FROM (
     (SELECT 'Spotify' AS source, "danceability_%" AS danceability, "valence_%" AS valence, 
            "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
            "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
     FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) DESC
     LIMIT ${topx})
 
@@ -280,6 +283,7 @@ FROM (
            "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
            "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
     FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) DESC
     LIMIT ${topx})
 
@@ -289,6 +293,7 @@ FROM (
            "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
            "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
     FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) DESC
     LIMIT ${topx})
 
@@ -298,6 +303,7 @@ FROM (
            "energy_%" AS energy, "acousticness_%" AS acousticness, "instrumentalness_%" AS instrumentalness, 
            "liveness_%" AS liveness, "speechiness_%" AS speechiness, released_year
     FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) DESC
     LIMIT ${topx})
 ) AS aggregated_data
@@ -356,50 +362,50 @@ vegaEmbed('#ex02', graph_boxplot)
 
 
 // FAZER O GRAFICO DE INTERSECÇÃO AQUI
-// const query4 = `
-// SELECT track_name, 
-//        artists_name,
-//        CAST(streams AS INT64) streams,
-//        COUNT(DISTINCT source) AS platform_count,
-//        STRING_AGG(DISTINCT source, ', ') AS platforms
-// FROM (
-//     (SELECT 'Spotify' AS source, track_name, released_year, artists_name, streams
-//     FROM spotify
-//     WHERE released_year BETWEEN ${infYear} AND ${supYear}
-//     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) DESC
-//     LIMIT ${topx})
+const query4 = `
+SELECT track_name, 
+       artists_name,
+       CAST(streams AS INT64) streams,
+       COUNT(DISTINCT source) AS platform_count,
+       STRING_AGG(DISTINCT source, ', ') AS platforms
+FROM (
+    (SELECT 'Spotify' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_spotify_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
 
-//     UNION ALL
+    UNION ALL
 
-//     (SELECT 'Apple' AS source, track_name, released_year, artists_name, streams
-//     FROM spotify
-//     WHERE released_year BETWEEN ${infYear} AND ${supYear}
-//     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) DESC
-//     LIMIT ${topx})
+    (SELECT 'Apple' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_apple_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
 
-//     UNION ALL
+    UNION ALL
 
-//     (SELECT 'Deezer' AS source, track_name, released_year, artists_name, streams
-//     FROM spotify
-//     WHERE released_year BETWEEN ${infYear} AND ${supYear}
-//     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) DESC
-//     LIMIT ${topx})
+    (SELECT 'Deezer' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_deezer_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
 
-//     UNION ALL
+    UNION ALL
 
-//     (SELECT 'Shazam' AS source, track_name, released_year, artists_name, streams
-//     FROM spotify
-//     WHERE released_year BETWEEN ${infYear} AND ${supYear}
-//     ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) DESC
-//     LIMIT ${topx})
-// ) AS results
-// GROUP BY track_name, artists_name, streams
-// HAVING COUNT(DISTINCT source) > 1
-// ORDER BY platform_count DESC, track_name;
-// `
+    (SELECT 'Shazam' AS source, track_name, released_year, artists_name, streams
+    FROM spotify
+    WHERE released_year BETWEEN ${infYear} AND ${supYear}
+    ORDER BY COALESCE(CAST(NULLIF(REPLACE(in_shazam_charts, ',', ''), '') AS INTEGER), 0) DESC
+    LIMIT ${topx})
+) AS results
+GROUP BY track_name, artists_name, streams
+HAVING COUNT(DISTINCT source) > 1
+ORDER BY platform_count DESC, track_name;
+`
 
-// const dataGraph4 = await db.query(query4);
-// view(Inputs.table(dataGraph4));
+const dataGraph4 = await db.query(query4);
+view(Inputs.table(dataGraph4));
 ```
 
 
