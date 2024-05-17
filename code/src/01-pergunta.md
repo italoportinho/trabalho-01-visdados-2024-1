@@ -4,11 +4,8 @@ theme: [glacier,dashboard]
 toc: false
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
-<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
-# 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?
+<h1> 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?</h1>
 <hr>
 
 <div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
@@ -157,6 +154,7 @@ toc: false
 import * as vega from "npm:vega";
 import * as vegaLite from "npm:vega-lite";
 import * as vegaLiteApi from "npm:vega-lite-api";
+import embed from "npm:vega-embed";
 //const divWidth = Generators.width(document.querySelector("#vis_completo"));
 
 /*
@@ -540,7 +538,7 @@ const graph_heatmap = {
 }
 
 
- vegaEmbed("#chart_heatmap", graph_heatmap)
+ embed("#chart_heatmap", graph_heatmap)
 
 function popula_months_array(months_array, dataset){
   // Iteramos no dataset para extrair os lançamentos por mês e popular o array.

@@ -2,11 +2,8 @@
 title: Pergunta 2
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
-<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 
-# 2) O conjunto das top 10 músicas e dos top 10 artistas varia muito se considerarmos apenas musicas lançadas no mesmo ano?
+<h1> 2) O conjunto das top 10 músicas e dos top 10 artistas varia muito se considerarmos apenas musicas lançadas no mesmo ano?</h1>
 <hr>
 
 <div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
@@ -61,6 +58,7 @@ title: Pergunta 2
 import * as vega from "npm:vega";
 import * as vegaLite from "npm:vega-lite";
 import * as vegaLiteApi from "npm:vega-lite-api";
+import embed from "npm:vega-embed";
 // Carregamos o dataset.
 let dataset = await FileAttachment("data/spotify-2023.csv").csv({typed: true});
 const db = await DuckDBClient.of({spotify: FileAttachment("data/spotify-2023.csv").csv({typed: true})});
@@ -213,7 +211,7 @@ const chart_top_10_musicas_2022_embed = {
         ]                
     }
 }
-vegaEmbed('#chart_top_10_musicas_2022', chart_top_10_musicas_2022_embed)
+embed('#chart_top_10_musicas_2022', chart_top_10_musicas_2022_embed)
 
 ```
 
