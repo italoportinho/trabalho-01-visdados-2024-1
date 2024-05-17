@@ -32,13 +32,13 @@ title: Pergunta 3
 <hr>
 
 
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">
         Para analisar as diferenças entre o Spotify, Deezer, Apple Music e Shazam, é essencial considerar suas funcionalidades específicas e propósitos distintos. É importante observar que o Shazam não  é uma plataforma de streaming de música, mas sim um aplicativo de reconhecimento. Seu principal objetivo é identificar músicas desconhecidas em reprodução, fornecendo informações sobre título, artista e álbum. Diferenciando-se disso, o Spotify, Deezer e Apple Music são serviços de streaming de música que compartilham a funcionalidade principal de permitir aos usuários ouvir músicas sob demanda. Por consequência dessa informação, a nossa base de dados conta com as colunas "in_playlists" somente para essas plataformas, que indica a quantidade de playlists contendo determinada música. Em contrapartida, o Shazam não possui essa coluna devido o fato de não fornecer a possibilidade de reproduzir músicas em playlists. Porém uma boa maneira de comparar as 4 plataformas seria analisar o desempenho e popularidade das músicas através da coluna "in_charts", que indica quantas vezes uma determinada música apareceu nos rankings das plataformas, divulgados em intervalos específicos de tempo.
     </p>
 </div>
 <br>
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">
         Para iniciar nossa análise, considerando a questão 3 do presente trabalho, vamos levantar duas perguntas auxiliares que nos ajudarão a comparar as plataformas. A primeira pergunta é: "A quantidade de playlists em que uma música está presente influencia sua presença em mais rankings?" Enquanto a segunda é: "Considerando as top x músicas que mais aparecem nos rankings de uma plataforma, elas possuem características acústicas diferentes entre as plataformas?".
         A primeira pergunta pode ser respondida apenas para as plataformas Spotify, Deezer e Apple Music, já que elas possuem a coluna "in_play_lists". Já a segunda pergunta pode incluir a plataforma Shazam.
@@ -46,7 +46,7 @@ title: Pergunta 3
 </div>
 <br>
 
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">      
         Com os filtros abaixo, podemos ajustar o intervalo de datas de lançamento das músicas em nossa base de dados, além de filtrar por plataforma e selecionar as top x músicas mais frequentes nos rankings.
     </p>
@@ -219,7 +219,7 @@ vegaEmbed('#ex01', graph_scatter)
 
 <br>
 
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px; margin-bottom:50px">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px; margin-bottom:50px">
     <p style="text-align: justify;">      
     Podemos observar que ao considerar o período completo dos dados, abrangendo os anos de 1930 a 2023, as colunas "in_playlists" e "in_charts" apresentaram uma correlação relativamente baixa para as três plataformas: Spotify, Apple Music e Deezer. Notavelmente, a Apple Music se destaca com uma correlação de 0.415. Um aspecto a se notar neste intervalo de tempo é que tanto o Spotify quanto o Deezer mostram uma quantidade significativa de músicas com alta presença em playlists porém uma presença relativamente baixa nos rankings. Isso sugere que essas plataformas podem não considerar a popularidade das músicas em playlists de usuários ao criar seus rankings.
     Ao aproximar o limite inferior dos anos de lançamento das músicas para anos mais rescentes, observamos uma mudança nas correlações. Para o Spotify e o Deezer, a correlação tende a aumentar, enquanto para a Apple Music ela diminui. Isso sugere que essas duas plataformas podem preferir destacar músicas mais recentes em seus rankings. Por exemplo, ao filtrar para o ano de 2023, a correlação do Deezer atinge 0.802, a do Spotify é de 0.497 e a da Apple Music é de 0.408. Esses insights podem indicar que a relação entre a inclusão das músicas em playlists dos usuários e a presença nos rankings varia ao longo do tempo e entre as diferentes plataformas de música
@@ -472,7 +472,7 @@ view(Inputs.table(table_music_plataforms));
     <div id="ex02" class="card grid-colspan-2"></div>
     <div id="ex03" class="card grid-colspan-1"></div>
 </div>
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">      
     Com base na análise do intervalo completo de datas de lançamento das músicas e no top 20 músicas presentes nos rankings das plataformas, observamos algumas diferenças nos anos de lançamento. Notavelmente, o Spotify, Apple Music e Shazam têm uma predominância de músicas lançadas em 2023, enquanto o Deezer tem uma concentração maior de músicas lançadas em 2022. Além disso, é importante destacar que, com exceção do Shazam e Apple Music, as outras plataformas não incluem no top 20 músicas lançadas na década passada. No entanto, a grande maioria das músicas mais populares entre as plataformas são músicas lançadas em anos recentes. É comum pensar que as plataformas priorizam a inclusão de músicas novas lançadas em seus rankings, o que pode explicar essa concentração.
     <br>

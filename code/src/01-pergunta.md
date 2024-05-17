@@ -9,10 +9,14 @@ toc: false
 <hr>
 
 ```js
+import * as vega from "npm:vega";
+import * as vegaLite from "npm:vega-lite";
+import * as vegaLiteApi from "npm:vega-lite-api";
+import embed from "npm:vega-embed";
 let divWidth = 670;
 ```
 
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">
         Nesta primeira seção do trabalho vamos explorar os atributos do dataset com diversas visualizações para verificar se algum valor específico, ou faixa de valor, desses atributos tem alguma influência relevante na posição da música no conjunto. Serão apresentadas visualizações para o mês de lançamento, o dia de lançamento, BPM, para todas as propriedades percentuais, e também para as propriedades musicais(tom da música). Exceto pela visualização de  dia de lançamento, todas usam o dataset já ordenado pelo número de streams.
     </p>
@@ -22,27 +26,52 @@ let divWidth = 670;
 ## Total de músicas lançadas por mês:
 
 <div class="grid grid-cols-2">
-  <div class="card" id="vis_completo">  
+  <div class="card" id="vis_completo_completo">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart(months_array_completo, "Dataset Completo")) }
+
+  ```js
+  const graph_bar_completo =  bar_chart(months_array_completo, "Dataset Completo");
+  embed("#vis_completo_completo",graph_bar_completo.spec)
+  ```
+
   </div>  
 </div>
 <div class="grid grid-cols-2">  
-  <div class="card" id="vis_completo">  
+  <div class="card" id="vis_completo_25">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart(months_array_25, "Dataset 25%")) }
+
+  ```js
+  const graph_bar_25 =  bar_chart(months_array_25, "Dataset 25%");
+  embed("#vis_completo_25",graph_bar_25.spec)
+  ```
+
   </div>  
-  <div class="card" id="vis_completo">  
-      <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart(months_array_50, "Dataset 25% - 50%")) }
+  <div class="card" id="vis_completo_25_50">  
+      <span style="font-size: 80%;"></span> 
+
+  ```js
+  const graph_bar_25_50 =  bar_chart(months_array_50, "Dataset 25% - 50%");
+  embed("#vis_completo_25_50",graph_bar_25_50.spec)
+  ```
+
   </div>  
-  <div class="card" id="vis_completo">  
+  <div class="card" id="vis_completo_50_75">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart(months_array_75, "Dataset 50% - 75%")) }
+
+  ```js
+  const graph_bar_50_75 =  bar_chart(months_array_75, "Dataset 50% - 75%");
+  embed("#vis_completo_50_75",graph_bar_50_75.spec)
+  ```
+
   </div>  
-  <div class="card" id="vis_completo">  
+  <div class="card" id="vis_completo_75_100">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart(months_array_100, "Dataset 75% - 100%")) }
+
+  ```js
+  const graph_bar_75_100 =  bar_chart(months_array_100, "Dataset 75% - 100%");
+  embed("#vis_completo_75_100",graph_bar_75_100.spec)
+  ```
+
   </div>  
 </div>
 
@@ -76,8 +105,13 @@ let divWidth = 670;
 ## BPM das músicas:
 
 <div class="grid grid-cols-1">
-  <div class="card" id="chart_dataset_bpm">        
-      ${ vl.render(line_chart(dataset, "BPM Top 50 músicas", "streams", "streams", "bpm", "BPM da música")) }      
+  <div class="card" id="chart_dataset_bpm">     
+
+```js
+const graph_line_BPM = line_chart(dataset, "BPM Top 50 músicas", "streams", "streams", "bpm", "BPM da música");
+embed("#chart_dataset_bpm",graph_line_BPM.spec);
+```   
+    
   </div>
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
@@ -142,9 +176,14 @@ let divWidth = 670;
 
 ## Propriedades musicais
 <div class="grid grid-cols-1">
-  <div class="card" id="vis_completo">  
+  <div class="card" id="vis_completo_chart2">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart2(musical_data, "Streams por tom musical", "streams", "Streams", "tom_da_musica", "Tom musical")) }
+
+```js
+const graph_chart2 = bar_chart2(musical_data, "Streams por tom musical", "streams", "Streams", "tom_da_musica", "Tom musical")
+embed("#vis_completo_chart2",graph_chart2.spec)
+```
+
   </div>    
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
@@ -155,10 +194,7 @@ let divWidth = 670;
 
 
 ```js
-import * as vega from "npm:vega";
-import * as vegaLite from "npm:vega-lite";
-import * as vegaLiteApi from "npm:vega-lite-api";
-import embed from "npm:vega-embed";
+
 
 
 /*
@@ -352,8 +388,12 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
             field: "streams",
             type: "quantitative",
             title: "Total de streams"
-        }                
-      }
+        } ,
+        tooltip: [
+        {field: campo_y, title: titulo_y},
+        {field: campo_x, title: titulo_x, format:","}
+        ],                
+      },
     }
   }
 }
@@ -382,6 +422,10 @@ function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
               aggregate: "mean",
               sort: "asc"
           },
+          tooltip: [
+          {field: campo_y, type: "quantitative", title: title_y},
+          {field: campo_x, type: "quantitative", title: title_x, format:","}
+          ],    
           
       }
     }

@@ -11,7 +11,7 @@ const divWidth = Generators.width(document.querySelector(".grid"));
 <h1> 2) O conjunto das top 10 músicas e dos top 10 artistas varia muito se considerarmos apenas musicas lançadas no mesmo ano?</h1>
 <hr>
 
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">
         Nesta seção do trabalho vamos analisar as relações entre o top 10 de músicas e o top 10 de artistas, ano a ano, e usar um conjunto de visualizações para tentar extrair alguma informação relevante. Começaremos listando a quantidade de músicas lançadas por ano, para verificarmos os anos mais relevantes. Temos que levar em consideração que o dataset utilizado não é um conjunto completo de todas as músicas lançadas em cada ano, portanto muitos anos terão pouquíssimos ou nenhum lançamento. Serão utilizados gráficos de barras, em três visualizações por ano, para comparar os artistas do top 10 com quantas músicas foram necessárias para alcançar o top 10, e se algum desses artistas está presente no top 10 das músicas.
     </p>
@@ -23,7 +23,11 @@ const divWidth = Generators.width(document.querySelector(".grid"));
 <div class="grid grid-cols-1">
   <div class="card" id="total_musicas_ano">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart2(lancamentos_por_ano, "Total de músicas lançadas em cada ano", "Ano", "Ano", "Musicas", "Total de lançamentos")) }
+
+```js
+embed("#total_musicas_ano",bar_chart2(lancamentos_por_ano, "Total de músicas lançadas em cada ano", "Ano", "Ano", "Musicas", "Total de lançamentos").spec)
+```
+
   </div>  
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
@@ -35,9 +39,14 @@ const divWidth = Generators.width(document.querySelector(".grid"));
 
 ## Top 10 de artistas por streams (2022)
 <div class="grid grid-cols-1">
-  <div class="card" id="total_musicas_ano">  
+  <div class="card" id="top_10_artistas_2022">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart2(top_10_artistas_2022, "Total de streams no ano", "Artista", "Artista", "total_streams", "Total de streams")) }
+
+
+```js
+embed("#top_10_artistas_2022",bar_chart2(top_10_artistas_2022, "Total de streams no ano", "Artista", "Artista", "total_streams", "Total de streams").spec)
+```
+
   </div>  
 </div>
 
@@ -46,7 +55,11 @@ const divWidth = Generators.width(document.querySelector(".grid"));
 <div class="grid grid-cols-1">
   <div class="card" id="count_musicas_artistas">  
       <span style="font-size: 80%;"></span>  
-      ${ vl.render(bar_chart2(artists_array.slice(0, 10), "Músicas por Artista", "artists_name", "Artista", "musicas", "Total de músicas")) }
+
+```js
+embed("#count_musicas_artistas",bar_chart2(artists_array.slice(0, 10), "Músicas por Artista", "artists_name", "Artista", "musicas", "Total de músicas").spec)
+```
+
   </div>  
 </div>
 
@@ -173,7 +186,11 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
             field: campo_y,
             type: "quantitative",
             title: titulo_y
-        }                
+        },
+        tooltip: [
+            {field: campo_y, title: titulo_y},
+            {field: campo_x, title: titulo_x}
+        ],                   
       }
     }
   }
@@ -212,7 +229,7 @@ const chart_top_10_musicas_2022_embed = {
                 field: "streams",
                 type: "quantitative",                
                 title: "streams",
-                format:",.3s"
+                format:","
             }
         ]                
     }
@@ -232,7 +249,3 @@ embed('#chart_top_10_musicas_2022', chart_top_10_musicas_2022_embed)
     </p>
 </div>
 <br>
-<div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
-    <p style="text-align: justify;">
-    </p>
-</div>
