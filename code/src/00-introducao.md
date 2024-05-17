@@ -1,12 +1,16 @@
 ---
-theme: dashboard
+theme: [dashboard,glacier]
 title: Introdução
 toc: false
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
 
 ## Introdução
-Este trabalho consiste em uma anáise detalhada de um dataset composto por músicas presentes na plataforma de streaming de audio spotify e utilizando um conjunto de diversas visualizações, vamos responder às perguntas propostas. É importante ressaltar que o dataset não é um conjunto exaustivo, não tem todas as músicas presentes na plataforma(possui somente 953 registros), bem como não avalia todas as propriedades possíveis de uma música. A duração da música, por exemplo, não está presente. O dataset contém a música e seu número de streams até meados de 2023, dentre vários outros atributos listados abaixo.
+<div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px; margin-bottom:50px">
+    <p style="text-align: justify;">   
+    Este trabalho consiste em uma análise detalhada de um dataset composto por músicas presentes na plataforma de streaming de áudio Spotify. Utilizando um conjunto de diversas visualizações, vamos responder às perguntas propostas. É importante ressaltar que o dataset não é um conjunto exaustivo, pois não contém todas as músicas presentes na plataforma (possui somente 953 registros), bem como não avalia todas as propriedades possíveis de uma música. Por exemplo, a duração da música não está presente nos dados. O dataset inclui informações como o nome da música, seu número de streams até meados de 2023, e vários outros atributos listados abaixo. 
+    </p>
+</div>
 
 - **track_name**: Nome da música.
 - **artist(s)_name**: Nome(s) dos artistas(s) envolvidos na música.

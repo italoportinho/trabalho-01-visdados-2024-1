@@ -1,7 +1,12 @@
 ---
 title: Pergunta 2
+theme: [glacier]
 ---
 <style> body, div, p, li, ol, h1 { max-width: none; } </style>
+
+```js
+const divWidth = Generators.width(document.querySelector(".grid"));
+```
 
 <h1> 2) O conjunto das top 10 músicas e dos top 10 artistas varia muito se considerarmos apenas musicas lançadas no mesmo ano?</h1>
 <hr>
@@ -44,6 +49,7 @@ title: Pergunta 2
       ${ vl.render(bar_chart2(artists_array.slice(0, 10), "Músicas por Artista", "artists_name", "Artista", "musicas", "Total de músicas")) }
   </div>  
 </div>
+
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
         No primeiro gráfico (Top 10 de artistas) são listados os 10 artistas com mais streams em 2022, e desse conjunto totalizamos quantas músicas foram necessárias para cada artista chegar à esse top 10. Na segunda visualização podemos constatar que metade dos artistas teve que lançar mais de 10 músicas somente em 2022 para chegar ao top 10!
@@ -154,7 +160,7 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
       data: {
           values: data_array
       },
-      width: "800",
+      width: divWidth,
       mark: "bar",
       title: titulo,
       encoding: {
@@ -177,7 +183,7 @@ const chart_top_10_musicas_2022_embed = {
     data: {
         values: top_10_musicas_2022
     },
-    width: "800",
+    width: divWidth,
     mark: "bar",
     title: "Top 10 músicas - 2022",
     encoding: {
@@ -228,6 +234,5 @@ embed('#chart_top_10_musicas_2022', chart_top_10_musicas_2022_embed)
 <br>
 <div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
     <p style="text-align: justify;">
-        
     </p>
 </div>

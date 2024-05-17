@@ -8,6 +8,10 @@ toc: false
 <h1> 1) Existe alguma característica que faz uma música ter mais chance de se tornar popular?</h1>
 <hr>
 
+```js
+let divWidth = 670;
+```
+
 <div style="background-color: #f2f2f2; border-left: 6px solid #4CAF50; padding: 10px;">
     <p style="text-align: justify;">
         Nesta primeira seção do trabalho vamos explorar os atributos do dataset com diversas visualizações para verificar se algum valor específico, ou faixa de valor, desses atributos tem alguma influência relevante na posição da música no conjunto. Serão apresentadas visualizações para o mês de lançamento, o dia de lançamento, BPM, para todas as propriedades percentuais, e também para as propriedades musicais(tom da música). Exceto pela visualização de  dia de lançamento, todas usam o dataset já ordenado pelo número de streams.
@@ -92,7 +96,7 @@ toc: false
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Aqui é utilizado um gráfico multilinha para explorar os atributos que são apresentados com um valor percentual. São eles: danceability(o quão dançante é  a música), valence (positividade da música), energy (nível de energia associado à música), acousticness (sons acústicos na música), instrumentalness (proporção de instrumental na música), liveness (presença de elementos de gravação ao vivo na música) e speechiness (prenseça de vocais na música). Aqui vamos analizar as duas pontas do gráfico para verificar se um valor alto ou baixo de uma propriedade influencia no sucesso da música, e também vamos ver se alguma propriedade é mais relevante que outra.         
+        Aqui é utilizado um gráfico multilinha para explorar os atributos que são apresentados com um valor percentual. São eles: danceability(o quão dançante é  a música), valence (positividade da música), energy (nível de energia associado à música), acousticness (sons acústicos na música), instrumentalness (proporção de instrumental na música), liveness (presença de elementos de gravação ao vivo na música) e speechiness (presença de vocais na música). Aqui vamos analizar as duas pontas do gráfico para verificar se um valor alto ou baixo de uma propriedade influencia no sucesso da música, e também vamos ver se alguma propriedade é mais relevante que outra.         
     </p>
     <ul style="max-width: none;">
       <li>
@@ -155,7 +159,7 @@ import * as vega from "npm:vega";
 import * as vegaLite from "npm:vega-lite";
 import * as vegaLiteApi from "npm:vega-lite-api";
 import embed from "npm:vega-embed";
-//const divWidth = Generators.width(document.querySelector("#vis_completo"));
+
 
 /*
 *
@@ -304,7 +308,7 @@ const vl = vegaLiteApi.register(vega, vegaLite);
 function bar_chart(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
     return {
         spec: {
-          width: "360",
+          width: divWidth,
             data: {
                 values: data_array
             },
@@ -335,7 +339,7 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
       data: {
           values: data_array
       },
-      width: "800",
+      width: divWidth*2,
       mark: "bar",
       title: titulo,
       encoding: {
@@ -357,7 +361,7 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
 function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
   return {
     spec: {
-      width: "800",
+      width: divWidth*2,
       data: {
           values: data_array
       },
@@ -388,7 +392,7 @@ function multiline_chart(data_array){
   return {
     spec: {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      width: "800",
+      width: divWidth*2,
       height: "400",
       data: {
         values: data_array
@@ -481,7 +485,7 @@ console.log(heatmap_data.batches[0].data.children[0]);
 
 
 const graph_heatmap = {
-    width: "800",
+    width: divWidth*2 - 50,
     height: "268",
     "data": { values: heatmap_data},
     "title": "Soma de streams por dia de lançamento",
