@@ -109,7 +109,7 @@ let divWidth = 670;
   <div class="card" id="chart_dataset_bpm">     
 
 ```js
-const graph_line_BPM = line_chart(dataset, "BPM Top 50 músicas", "streams", "streams", "bpm", "BPM da música");
+const graph_line_BPM = line_chart(dataset, "BPM Top 50 músicas", "streams", "Média de streams", "bpm", "BPM da música");
 embed("#chart_dataset_bpm",graph_line_BPM.spec);
 ```   
     
@@ -117,7 +117,7 @@ embed("#chart_dataset_bpm",graph_line_BPM.spec);
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Para analizar o BPM(batidas por minuto) será utilizado um gráfico de linha com pontos. Nele podemos verificar que para valores mais baixos na escala de streams, o BPM das músicas oscila bastante entre valores altos e baixos. Porém para valores mais altos de stream(aonde estão as  músicas mais populares), podemos constatar  que o valor de BPM possui menos variação e fica com uma média estável proxima de 170.
+        Para analizar o BPM(batidas por minuto) será utilizado um gráfico de linha com pontos, fazendo a relação entre BPM das músicas e a média de streams. Nele podemos verificar que para valores mais baixos na escala de streams, o BPM das músicas oscila bastante entre valores altos e baixos. Porém para valores mais altos da média de stream(aonde estão as  músicas mais populares), podemos constatar  que o valor de BPM possui menos variação.
     </p>
 </div>
 <br>
