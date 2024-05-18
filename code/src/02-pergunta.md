@@ -245,7 +245,7 @@ embed('#chart_top_10_musicas_2022', chart_top_10_musicas_2022_embed)
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Nesse gráfico é apresentado o top 10 de músicas em 2022. Passando o mouse sobre as barras do gráfico é possível observar os valores dos campos e contatamos que 4 artistas presentes nas duas visualizações anteriores estão com um música presente no top 10.
+        Nesse gráfico é apresentado o top 10 de músicas em 2022. Passando o mouse sobre as barras do gráfico é possível observar os valores dos campos e constatamos que 4 artistas presentes nas duas visualizações anteriores estão com um música presente no top 10.
     </p>
 </div>
 <br>

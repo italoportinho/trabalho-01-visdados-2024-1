@@ -222,7 +222,7 @@ vegaEmbed('#ex01', graph_scatter)
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px; margin-bottom:50px">
     <p style="text-align: justify;">      
     Podemos observar que ao considerar o período completo dos dados, abrangendo os anos de 1930 a 2023, as colunas "in_playlists" e "in_charts" apresentaram uma correlação relativamente baixa para as três plataformas: Spotify, Apple Music e Deezer. Notavelmente, a Apple Music se destaca com uma correlação de 0.415. Um aspecto a se notar neste intervalo de tempo é que tanto o Spotify quanto o Deezer mostram uma quantidade significativa de músicas com alta presença em playlists porém uma presença relativamente baixa nos rankings. Isso sugere que essas plataformas podem não considerar a popularidade das músicas em playlists de usuários ao criar seus rankings.
-    Ao aproximar o limite inferior dos anos de lançamento das músicas para anos mais rescentes, observamos uma mudança nas correlações. Para o Spotify e o Deezer, a correlação tende a aumentar, enquanto para a Apple Music ela diminui. Isso sugere que essas duas plataformas podem preferir destacar músicas mais recentes em seus rankings. Por exemplo, ao filtrar para o ano de 2023, a correlação do Deezer atinge 0.802, a do Spotify é de 0.497 e a da Apple Music é de 0.408. Esses insights podem indicar que a relação entre a inclusão das músicas em playlists dos usuários e a presença nos rankings varia ao longo do tempo e entre as diferentes plataformas de música
+    Ao aproximar o limite inferior dos anos de lançamento das músicas para anos mais rescentes, observamos uma mudança nas correlações. Para o Spotify e o Deezer, a correlação tende a aumentar, enquanto para a Apple Music ela diminui. Isso sugere que essas duas plataformas podem preferir destacar músicas mais recentes em seus rankings. Por exemplo, ao filtrar para o ano de 2023, a correlação do Deezer atinge 0.802, a do Spotify é de 0.497 e a da Apple Music é de 0.408. Esses insights podem indicar que a relação entre a inclusão das músicas em playlists dos usuários e a presença nos rankings varia ao longo do tempo e entre as diferentes plataformas de música.
     </p>
 </div>
 
@@ -421,7 +421,8 @@ const graph_bar = {
         "y": {
             "field": "released_year",
             "type": "ordinal",
-            "axis": { "title": "Ano de Lançamento" }
+            "axis": { "title": "Ano de Lançamento" },
+            "sort": "descending"
         },
         "x": {
             "aggregate": "count",
@@ -436,10 +437,7 @@ const graph_bar = {
         "color": {
             "field": "source", 
             "type": "nominal",
-            "legend": {
-                "title": "Plataforma",
-                "orient": "right"
-            },
+            "legend": null,
             "scale": {
                 "domain": ["Spotify", "Deezer", "Apple", "Shazam"],
                 "range": ["#1f77b4", "#ff7f0e", "#2ca02c", "#ffff05"]
@@ -468,8 +466,8 @@ view(Inputs.table(table_music_plataforms));
 </div>
 
 
-<div class="grid grid-cols-3"> 
-    <div id="ex02" class="card grid-colspan-2"></div>
+<div class="grid grid-cols-4"> 
+    <div id="ex02" class="card grid-colspan-3"></div>
     <div id="ex03" class="card grid-colspan-1"></div>
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">

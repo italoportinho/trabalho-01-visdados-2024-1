@@ -77,7 +77,8 @@ let divWidth = 670;
 
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Essa conjunto de visualizações apresenta o número de lançamentos por mês, como dataset ordenado por streams em ordem crescente e divido em intervalo quantil. Foi utilizado o gráfico de barra, pois cada mês seria um "pote" aonde os lançamentos seriam colocados, possibilitando uma comparação quantitativa visual direta entre os diferentes intervalos. Primeiramente é apresentado o gráfico com o dataset completo, e é verificado que os meses de janeiro e maio tem os maiores números de lançamentos, sendo os únicos acima de 100. Em seguida temos 4 visualizaçãoes, uma para cada quartil do dataset começando pelo primeiro e o mês de maio se destaca no primeiro, segundo e terceiro, e o mês de janeiro se destaca no quarto, que é o intervalo mais relevante para nosso estudo pois é o que contém as  músicas com os maiores números de visualizações. 
+    Este conjunto de visualizações apresenta o número de lançamentos por mês. O dataset foi ordenado por streams em ordem crescente e dividido em intervalos de quartis. Utilizou-se um gráfico de barras, pois cada mês atua como um "pote" onde os lançamentos são agrupados, permitindo uma comparação visual direta e quantitativa entre os diferentes intervalos. Primeiramente, o gráfico com o dataset completo é apresentado, revelando que os meses de janeiro e maio possuem os maiores números de lançamentos, sendo os únicos com mais de 100. Em seguida, quatro visualizações são mostradas, uma para cada quartil do dataset, dividido com base nos valores de streams.
+    No primeiro gráfico, que representa o primeiro quartil, o mês de maio se destaca. No segundo e terceiro gráfico, o padrão se mantém, com maio continuando a ter destaque. No quarto gráfico, que representa o quartil com os maiores valores de streams, observa-se uma mudança, o mês de janeiro se destaca significativamente. Este último intervalo é o mais relevante para nosso estudo, pois contém as BPMs com os maiores números de visualizações.
     </p>
 </div>
 <br>
@@ -95,14 +96,14 @@ let divWidth = 670;
 
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Nessa visualiação apresentamos uma visualização em forma de matriz, o mapa de calor, da forma mês(eixo y) por dia do mês(eixo x). Quanto mais lançamentos um dia do mês tiver, mais escura será a cor do quadrante e se destacam os dias 6 de maio e 1º de janeiro, o que corrobora o achado das visualizações de gráfico de barra que já apontavam esses meses como os com maior número de lançamentos de músicas que alcançaram as posições mais altas no dataset ordenado. 
+    Nesta visualização, apresentamos um mapa de calor em formato de matriz, com os meses no eixo y e os dias do mês no eixo x. As cores mapeiam o valor de streams em escala logarítmica para cada data, uma escolha feita devido ao grande intervalo de variação no número de streams. Para visualizar o número exato de streams em cada data, o recurso de tooltip pode ser utilizado ao passar o mouse sobre os quadrantes. Quanto mais lançamentos ocorrerem em um determinado dia do mês, mais escura será a cor do quadrante correspondente. Os dias 6 de maio e 1º de janeiro se destacam com as cores mais escuras, corroborando os achados das visualizações de gráfico de barras que já apontavam esses meses como os com maior número de lançamentos de BPMs.
     </p>
 </div>
 <br>
 
 <hr>
 
-## BPM das músicas:
+## BPM das BPMs:
 
 <div class="grid grid-cols-1">
   <div class="card" id="chart_dataset_bpm">     
@@ -116,7 +117,7 @@ embed("#chart_dataset_bpm",graph_line_BPM.spec);
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Para analizar o bpm(batidas por minuto) será utilizado um gráfico de linha com pontos. Nele podemos verificar que na metade inferior da escala de streams, o bpm das músicas oscila bastante entre valores altos e baixos. Porém da metade pra cima, e mais especificamente na parte mais alta da escala de streams (aonde estão as  músicas mais populares), podemos constatar  que média do valor de bpm mantém um valor bem estável, tendendo à valores entre 150 e 200. Podemos verificar também que músicas com bpm maior que 200 estão associdas à metade menor da escala de streams, bem como músicas com bpm inferior à 100.
+        Para analizar o BPM(batidas por minuto) será utilizado um gráfico de linha com pontos. Nele podemos verificar que para valores mais baixos na escala de streams, o BPM das músicas oscila bastante entre valores altos e baixos. Porém para valores mais altos de stream(aonde estão as  músicas mais populares), podemos constatar  que o valor de BPM possui menos variação. Podemos verificar também que músicas com BPM maior que 180 estão associdas com valores menores na escala de streams.
     </p>
 </div>
 <br>
