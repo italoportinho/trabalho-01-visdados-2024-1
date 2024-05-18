@@ -117,7 +117,7 @@ embed("#chart_dataset_bpm",graph_line_BPM.spec);
 </div>
 <div style="background-color: #f2f2f2; border-left: 6px solid royalblue; padding: 10px;">
     <p style="text-align: justify;">   
-        Para analizar o BPM(batidas por minuto) será utilizado um gráfico de linha com pontos. Nele podemos verificar que para valores mais baixos na escala de streams, o BPM das músicas oscila bastante entre valores altos e baixos. Porém para valores mais altos de stream(aonde estão as  músicas mais populares), podemos constatar  que o valor de BPM possui menos variação. Podemos verificar também que músicas com BPM maior que 180 estão associdas com valores menores na escala de streams.
+        Para analizar o BPM(batidas por minuto) será utilizado um gráfico de linha com pontos. Nele podemos verificar que para valores mais baixos na escala de streams, o BPM das músicas oscila bastante entre valores altos e baixos. Porém para valores mais altos de stream(aonde estão as  músicas mais populares), podemos constatar  que o valor de BPM possui menos variação e fica com uma média estável proxima de 170.
     </p>
 </div>
 <br>
@@ -345,7 +345,7 @@ const vl = vegaLiteApi.register(vega, vegaLite);
 function bar_chart(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
     return {
         spec: {
-          width: divWidth,
+          width: "container",
             data: {
                 values: data_array
             },
@@ -376,7 +376,7 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
       data: {
           values: data_array
       },
-      width: divWidth*2,
+      width: "container",
       mark: "bar",
       title: titulo,
       encoding: {
@@ -402,7 +402,7 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
 function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
   return {
     spec: {
-      width: divWidth*2,
+      width: "container",
       data: {
           values: data_array
       },
@@ -437,7 +437,7 @@ function multiline_chart(data_array){
   return {
     spec: {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      width: divWidth*2,
+      width: "600",
       height: "400",
       data: {
         values: data_array
@@ -530,7 +530,7 @@ console.log(heatmap_data.batches[0].data.children[0]);
 
 
 const graph_heatmap = {
-    width: divWidth*2 - 50,
+    width: "container",
     height: "268",
     "data": { values: heatmap_data},
     "title": "Soma de streams por dia de lançamento",

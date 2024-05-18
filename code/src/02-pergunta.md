@@ -173,7 +173,7 @@ function bar_chart2(data_array, titulo, campo_x, titulo_x, campo_y, titulo_y){
       data: {
           values: data_array
       },
-      width: divWidth,
+      width: "container",
       mark: "bar",
       title: titulo,
       encoding: {
@@ -200,7 +200,7 @@ const chart_top_10_musicas_2022_embed = {
     data: {
         values: top_10_musicas_2022
     },
-    width: divWidth,
+    width: "container",
     mark: "bar",
     title: "Top 10 músicas - 2022",
     encoding: {
