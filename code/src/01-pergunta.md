@@ -425,7 +425,7 @@ function line_chart(data_array, titulo, campo_x, title_x, campo_y, title_y){
           },
           tooltip: [
           {field: campo_y, type: "quantitative", title: title_y},
-          {field: campo_x, type: "quantitative", title: title_x, format:","}
+          {field: campo_x, type: "quantitative", title: title_x, aggregate: "mean", format:","}
           ],    
           
       }
